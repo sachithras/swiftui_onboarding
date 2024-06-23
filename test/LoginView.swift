@@ -11,6 +11,15 @@ struct LoginView: View {
     @State private var emailInput: String = ""
     @State private var passwordInput: String = ""
     
+    let monthlyPurchase = IAPItem(purchaseType: "Monthly",
+                                  costPerMonth: "$11.99",
+                                  costPerYear: "$143.99",
+                                  typeColor: "purchase_item_blue")
+    let yearlyPurchase = IAPItem(purchaseType: "Yearly",
+                                  costPerMonth: "$4.99",
+                                  costPerYear: "$59.99",
+                                  typeColor: "purchase_item_pink")
+    
     var body: some View {
         GeometryReader { geometry in
             VStack {
@@ -25,24 +34,24 @@ struct LoginView: View {
                 Spacer()
                 VStack {
                     CustomTextField(
-                                    text: $emailInput,
-                                    placeholder: "Email",
-                                    placeholderColor: .gray,
-                                    height: 60,
-                                    backgroundColor: UIColor(named: "primary_textfield_color"),
-                                    font: UIFont(name: "AvenirNext-Bold", size: 14)
-                                )
+                        text: $emailInput,
+                        placeholder: "Email",
+                        placeholderColor: .gray,
+                        height: 60,
+                        backgroundColor: UIColor(named: "primary_textfield_color"),
+                        font: UIFont(name: "AvenirNext-Bold", size: 14)
+                    )
                     .frame(height: 60)
                     .padding(.bottom, 15)
                     ZStack {
                         CustomTextField(
-                                        text: $passwordInput,
-                                        placeholder: "Password",
-                                        placeholderColor: .gray,
-                                        height: 60,
-                                        backgroundColor: UIColor(named: "primary_textfield_color"),
-                                        font: UIFont(name: "AvenirNext-Bold", size: 14)
-                                    )
+                            text: $passwordInput,
+                            placeholder: "Password",
+                            placeholderColor: .gray,
+                            height: 60,
+                            backgroundColor: UIColor(named: "primary_textfield_color"),
+                            font: UIFont(name: "AvenirNext-Bold", size: 14)
+                        )
                         .frame(height: 60)
                         Image("view_password_icon").offset(x: UIScreen.main.bounds.width / 2 - 42, y: 0)
                     }
@@ -51,8 +60,10 @@ struct LoginView: View {
                 Button(action: {
                     
                 }) {
-                    Text("Sign in")
-                        .frame(width: 126, height: 58)
+                    NavigationLink("Sign in") {
+                        PurchaseView(monthlyPurchaseItem: monthlyPurchase,
+                                     yearlyPurchaseItem: yearlyPurchase)
+                    }.frame(width: 126, height: 58)
                         .font(.custom("AvenirNext-Heavy", size: 18))
                         .foregroundColor(Color("primary_button_text_color"))
                         .background(Color("primary_button_color"))
@@ -73,10 +84,11 @@ struct LoginView: View {
                     }
                     .buttonStyle(PlainButtonStyle())
                 }.font(.custom("AvenirNext-Heavy", size: 15))
-                .padding()
+                    .padding()
                 
             }.frame(width: geometry.size.width, height: geometry.size.height)
         }.background(Color("primary_background_color"))
+            .toolbar(.hidden)
     }
 }
 
@@ -87,23 +99,23 @@ struct LoginView: View {
 struct CustomTextField: UIViewRepresentable {
     class Coordinator: NSObject, UITextFieldDelegate {
         var parent: CustomTextField
-
+        
         init(parent: CustomTextField) {
             self.parent = parent
         }
-
+        
         func textFieldDidChangeSelection(_ textField: UITextField) {
             parent.text = textField.text ?? ""
         }
     }
-
+    
     @Binding var text: String
     var placeholder: String
     var placeholderColor: UIColor
     var height: CGFloat
     var backgroundColor: UIColor?
     var font: UIFont?
-
+    
     func makeUIView(context: Context) -> UITextField {
         let textField = UITextField(frame: .zero)
         textField.delegate = context.coordinator
@@ -118,14 +130,14 @@ struct CustomTextField: UIViewRepresentable {
             attributes: [NSAttributedString.Key.foregroundColor: placeholderColor]
         )
         textField.attributedPlaceholder = placeholderAttributedString
-
+        
         return textField
     }
-
+    
     func updateUIView(_ uiView: UITextField, context: Context) {
         uiView.text = text
     }
-
+    
     func makeCoordinator() -> Coordinator {
         Coordinator(parent: self)
     }

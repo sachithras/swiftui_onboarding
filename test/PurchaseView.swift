@@ -8,6 +8,10 @@
 import SwiftUI
 
 struct PurchaseView: View {
+    
+    var monthlyPurchaseItem: IAPItem
+    var yearlyPurchaseItem: IAPItem
+    
     var body: some View {
         GeometryReader { geometry in
             VStack {
@@ -20,8 +24,8 @@ struct PurchaseView: View {
                     .foregroundColor(Color("primary_text_color"))
                     .multilineTextAlignment(.center)
                 HStack {
-                    PurchaseItem()
-                    PurchaseItem()
+                    PurchaseItem(purchaseItem: monthlyPurchaseItem)
+                    PurchaseItem(purchaseItem: yearlyPurchaseItem)
                 }.padding(.leading, 22)
                     .padding(.trailing, 22)
                     .frame(height: 136)
@@ -40,9 +44,19 @@ struct PurchaseView: View {
                 
             }.frame(width: geometry.size.width, height: geometry.size.height)
         }.background(Color("primary_background_color"))
+            .toolbar(.hidden)
     }
 }
 
 #Preview {
-    PurchaseView()
+    let monthlyPurchase = IAPItem(purchaseType: "Monthly",
+                                  costPerMonth: "$11.99",
+                                  costPerYear: "$143.99",
+                                  typeColor: "purchase_item_blue")
+    let yearlyPurchase = IAPItem(purchaseType: "Yearly",
+                                  costPerMonth: "$4.99",
+                                  costPerYear: "$59.99",
+                                  typeColor: "purchase_item_pink")
+    return PurchaseView(monthlyPurchaseItem: monthlyPurchase,
+                        yearlyPurchaseItem: yearlyPurchase)
 }
